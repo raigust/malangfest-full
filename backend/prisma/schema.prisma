@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Event {
+  id           Int       @id @default(autoincrement())
+  title        String
+  slug         String    @unique
+  category     String
+  posterUrl    String
+  borderStyle  String    @default("washi-tape")
+  pinRotation  Int       @default(0)
+  date         DateTime
+  time         String
+  venue        String
+  venueAddress String
+  priceType    String    @default("Gratis")
+  price        String
+  ticketUrl    String?
+  performer    String
+  curator      String?
+  synopsis     String
+  highlight    String?
+  status       String    @default("UPCOMING")
+  likesCount   Int       @default(0)
+  stickers     Sticker[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Sticker {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  text      String
+  color     String   @default("#FFE600")
+  rotation  Float    @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  displayName  String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
